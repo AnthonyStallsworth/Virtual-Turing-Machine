@@ -9,17 +9,8 @@ TuringMachine::TuringMachine()
 TuringMachine::TuringMachine(STT state_trans_t)
 { stt = state_trans_t; tape = new Tape(); }
 
-TuringMachine::TuringMachine(const TuringMachine &other)
-{ placeNum(tape->getOutput(), false); }
-
-TuringMachine::~TuringMachine()
-{ delete tape; std::cout << "I am getting called!" << std::endl;}
-
 STT TuringMachine::getSTT()
 { return stt; }
-
-void* TuringMachine::getTape()
-{ return tape; }
 
 void TuringMachine::printTape()
 { tape->printTape(); }
@@ -61,17 +52,6 @@ void TuringMachine::showOutput()
 
   std::cout << "The tape now holds the number: " << std::endl;
   std::cout << result << std::endl;
-}
-
-TuringMachine& TuringMachine::operator= (const TuringMachine& other)
-{
-  if(this != &other)
-  {
-    std::cout << "I am getting called! Assignment." << std::endl;
-    tape = other.tape;
-    stt = other.stt;
-  }
-  return *this;
 }
 
 /* -------------------------------TAPE--------------------------------- */

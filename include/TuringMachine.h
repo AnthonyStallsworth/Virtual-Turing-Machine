@@ -5,19 +5,14 @@ class TuringMachine
  public:
   TuringMachine();
   TuringMachine(STT state_trans_t);
-  TuringMachine(const TuringMachine &other);
-  ~TuringMachine();
   STT getSTT();
-  void* getTape();
   void printTape();
   void printSTT();
   void placeNum(int num, bool printIt);
   int run(bool printIt);
   void showOutput();
-
-  TuringMachine& operator= (const TuringMachine& other);
   
- /* private: */
+ private:
   class Tape
   {
    public:
