@@ -1,0 +1,10 @@
+Anthony Stallsworth
+May 9th, 2018
+
+TODO list (so far)
+----------------------------------------------------------------------------
+  * Make STT's constant
+  * Overwrite the Copy Constructor and Assignment Operator for all Objects.
+  * Change the Parser to allow precedence and parenthesis in algorithms.
+  * Write a Test Generator for the Virtual Turing Machine!
+----------------------------------------------------------------------------
