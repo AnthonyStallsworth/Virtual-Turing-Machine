@@ -2,9 +2,9 @@
 
 mv make/makefile make/../
 make
-mv turing exec/
+mv turing bin/
 mv makefile make/
-./exec/turing > output/turing_output
+./bin/turing > output/turing_output
 
 echo "Please press Enter..."
 read next
