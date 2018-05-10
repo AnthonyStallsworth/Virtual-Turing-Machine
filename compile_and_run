@@ -1,0 +1,16 @@
+#!/bin/bash
+
+mv make/makefile make/../
+make
+mv turing exec/
+mv makefile make/
+./exec/turing > output/turing_output
+
+echo "Please press Enter..."
+read next
+echo "I have placed the output of your executable into a file."
+echo "I am now going to open that file for you to read."
+echo "Please Press Enter..."
+read next
+
+vi output/turing_output

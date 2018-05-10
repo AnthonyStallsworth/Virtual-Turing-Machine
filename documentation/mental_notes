@@ -1,0 +1,54 @@
+Anthony Stallsworth
+Changelog/Mental Notes
+
+ -------------------------------------------May 8th-------------------------------------------
+  A C++ bug that I have been introduced to:
+  * I have a Tape pointer which is located on the stack, pointing to an area on the heap.
+    This pointer belongs to the TuringMachine Object and when the destructor gets called
+    it runs "delete tape;" This should just take the pointer and delete everything that
+    it references, however when it does this it gives me a double free runtime error.
+    When I delete the destructor function it runs just fine however I am worried that
+    there is a memory leak somewhere.
+
+    I have taken some notes:
+      * Corruption is when something is deleted before all references to it go out of scope.
+      * Memory leak is where there are no more memory references to an item, however there is still
+        memory allocated for it.
+
+    Here are some steps I have taken to research my runtime error:
+      * I installed a program called valgrind which checks for memory leaks, and when I ran it
+        with my program, it said that there were no possible memory leaks both with and without
+        the destructor functions. It works perfectly without the destructor functions (no
+        corruptions or memory leaks) so I think I am just going to leave them out for now.
+	I think that with the destructor functions there is some weird corruption happening
+        which I would really like to find. I am not sure why it is occurring.
+
+  Some mental notes!
+  * Instead of going out of my way to avoid letting people change the state of certain objects,
+    why do I not just make them const?
+
+  * Can I write a program that generates tests for the Virtual Turing Machine?
+    - Theorum for proving ALL functions/algorithms will work?
+
+  * How did I fix multiplication and division?
+    - How is multiplication and division used? Is it correct?
+
+  * What can I do to make my code even cleaner?
+    - Parser changes!
+
+  * Where would I like to take this program in the future?
+    - Possible website to show hiring managers. Rewrite in JavaScript?
+    - What else can I challenge myself to learn in C++?
+
+-------------------------------------------May 9th-------------------------------------------
+  Memory Issues Continued...
+  * So I have overwritten the copy constructor and the assignment operator
+    for the TuringMachine.cpp class in hopes that I will stop getting the double 
+    free or corruption error! At first I was getting a bad allocation error 
+    with my assignment operator, and I made some changes. I think that this error
+    is due to the runtime making sure that all the information was actually copied.
+    I was not copying (or allocating) every member of the class and when I changed
+    my code to do so it started working. However, I am still getting a double free or
+    corruption error. I am not sure why and it is very annoying. What I am going to do
+    is make a project on github, then do some heavy refactoring to the code. That way I
+    can just go back on what I did if I made a serious mistake. 

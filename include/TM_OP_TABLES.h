@@ -1,0 +1,2 @@
+STT makeAdd();
+STT makeSub();
