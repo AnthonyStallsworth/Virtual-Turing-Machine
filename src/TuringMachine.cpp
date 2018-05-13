@@ -9,8 +9,19 @@ TuringMachine::TuringMachine()
 TuringMachine::TuringMachine(STT state_trans_t)
 { stt = state_trans_t; tape = new Tape(); }
 
-STT TuringMachine::getSTT()
+TuringMachine::TuringMachine(const TuringMachine& other)
+{ *tape = other.getTape(); }
+
+TuringMachine::~TuringMachine()
+{ 
+  delete tape; 
+}
+
+STT TuringMachine::getSTT() const
 { return stt; }
+
+TuringMachine::Tape& TuringMachine::getTape() const
+{ return *tape; }
 
 void TuringMachine::printTape()
 { tape->printTape(); }
@@ -54,10 +65,16 @@ void TuringMachine::showOutput()
   std::cout << result << std::endl;
 }
 
+TuringMachine& TuringMachine::operator=(const TuringMachine& other)
+{ stt = other.getSTT(); }
+
 /* -------------------------------TAPE--------------------------------- */
 
 TuringMachine::Tape::Tape()
 { theTape.push_back(Bit(0)); curPos = 0; }
+
+TuringMachine::Tape::Tape(const Tape& other)
+{ theTape = other.getTape(); curPos = other.pos(); }
 
 int TuringMachine::Tape::write(Bit writeBit, Bit direction, bool printIt)
 {
@@ -72,9 +89,8 @@ int TuringMachine::Tape::write(Bit writeBit, Bit direction, bool printIt)
   {
    if(curPos == theTape.size()-1)
      theTape.push_back(Bit(0));
-   
-   theTape[curPos] = writeBit; 
-   curPos += 1; /* Direction = Right */
+     theTape[curPos] = writeBit;
+     curPos += 1; /* Direction = Right */
   }
   
   if(printIt)
@@ -148,6 +164,9 @@ int TuringMachine::Tape::getOutput()
   return output;
 }
 
+vector<Bit> TuringMachine::Tape::getTape() const
+{ return theTape; }
+
 void TuringMachine::Tape::printTape()
 {
   std::cout << "  START:" << std::endl;
@@ -169,7 +188,10 @@ void TuringMachine::Tape::printTape()
   std::cout << std::endl;
 }
 
-int TuringMachine::Tape::pos()
+int TuringMachine::Tape::pos() const
 {
   return curPos;
 }
+
+TuringMachine::Tape& TuringMachine::Tape::operator=(const Tape& other)
+{ theTape = other.getTape(); curPos = other.pos(); return *this; }

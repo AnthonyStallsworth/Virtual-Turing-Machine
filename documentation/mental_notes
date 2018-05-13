@@ -2,7 +2,7 @@ Anthony Stallsworth
 Changelog/Mental Notes
 
  -------------------------------------------May 8th-------------------------------------------
-  A C++ bug that I have been introduced to:
+  A memory issue that I have been introduced to:
   * I have a Tape pointer which is located on the stack, pointing to an area on the heap.
     This pointer belongs to the TuringMachine Object and when the destructor gets called
     it runs "delete tape;" This should just take the pointer and delete everything that
@@ -51,4 +51,45 @@ Changelog/Mental Notes
     my code to do so it started working. However, I am still getting a double free or
     corruption error. I am not sure why and it is very annoying. What I am going to do
     is make a project on github, then do some heavy refactoring to the code. That way I
-    can just go back on what I did if I made a serious mistake. 
+    can just go back on what I did if I made a serious mistake.
+
+-------------------------------------------May 10th-------------------------------------------
+  More insight on the memory issue
+  * At this point I am fairly certain that my issue is I am making a Turing Machine object,
+    and then using the assignment operator to change the State-Transition-Table to another
+    Turing Machines STT (for running the result of the previous machine onto the next machine.)
+    When I do this I need to make sure that the tape which gets copied over is a deep copy! This
+    means that I may have to overload the copy and assignment operator for both the Turing Machine
+    class AND the Tape class. I should probably do it for the other classes as well. What is
+    probably happening is that the destructor is being called and deletes the tape of one machine,
+    and then the next machine runs the destructor function however the tape is a shallow copy and
+    therefore will double free something. So I am going to fix that.
+    
+      * So, during my process I was getting another error that I think I should mention. The Tape
+        class is a private member inside of the TuringMachine class. My TuringMachine class had
+        a function called getTape() which returned a Tape&, however it had no clue what a Tape
+        object was in my header code because the type had not been declared yet. To fix this I
+        had to write a forward declaration of the Tape class INSIDE of my Turing Machine class!
+        For example, it looked like this:
+
+          class TuringMachine
+          {
+            class Tape;
+
+            public:
+            ...
+            Tape& getTape();
+            ...
+
+            private:
+              class Tape
+              {
+	      ...
+              }
+      	  };
+
+        The importance here is that forward declarations are very useful for the compiler to be able
+        to recognize types BEFORE they are declared!
+
+  * I fixed the memory error! It was a double free error like I thought... overwriting the copy
+    constructor and the assignment operator for both the Tape class and TuringMachine class worked.
