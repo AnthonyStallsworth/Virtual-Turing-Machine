@@ -9,5 +9,7 @@ X * Overwrite the Copy Constructor and Assignment Operator for Tape and TM.
   * Write a better makefile. My compilation is taking ages!
     - Write it so that it only compiles files I have changed.
 X * Change the Parser to allow precedence and parenthesis in algorithms.
+X * Seperate the object of the parser and the actual running of the VTM. 
+    - Create a TM-Composition object which will run.
   * Write a Test Generator for the Virtual Turing Machine!
 ----------------------------------------------------------------------------

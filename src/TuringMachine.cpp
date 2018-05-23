@@ -26,6 +26,9 @@ TuringMachine::Tape& TuringMachine::getTape() const
 void TuringMachine::printTape()
 { tape->printTape(); }
 
+void TuringMachine::clearTape()
+{ delete tape; tape = new Tape(); }
+
 void TuringMachine::printSTT()
 { stt.print(); }
 

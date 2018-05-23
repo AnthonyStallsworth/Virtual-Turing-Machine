@@ -5,6 +5,12 @@
 #include <queue>
 #include <ctype.h>
 
+Parser::Parser()
+{
+  equation = "";
+  curPos = 0;
+}
+
 Parser::Parser(string equat)
 {
   equation = equat;
@@ -26,6 +32,7 @@ string Parser::parseInt()
     curPos++;
 
   //return atoi(number.c_str());
+  number+= ' ';
   return number;
 }
 
@@ -36,18 +43,19 @@ string Parser::parseOp()
   op = equation[curPos++];
   if(equation[curPos] == ' ')
     curPos++;
-
+  
+  op += ' ';
   return op;
 }
 
 /* Get the precedence of the current operator */
 int Parser::getPrecedence(string op)
 {
-  if(op == "(") return 0;
-  if(op == "+" || op == "-") return 1;
-  if(op == "*" || op == "/") return 2;
-  if(op == "^") return 3;
-  if(op == ")") return 4;
+  if(op == "( ") return 0;
+  if(op == "+ " || op == "- ") return 1;
+  if(op == "* " || op == "/ ") return 2;
+  if(op == "^ ") return 3;
+  if(op == ") ") return 4;
   throw runtime_error("Expression '" + op + "' is not part of the language.");
 }
 

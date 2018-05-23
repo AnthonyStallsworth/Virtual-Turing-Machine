@@ -13,6 +13,7 @@ class TuringMachine
   STT getSTT() const;
   Tape& getTape() const;
   void printTape();
+  void clearTape();
   void printSTT();
   void placeNum(int num, bool printIt);
   int run(bool printIt);

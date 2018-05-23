@@ -3,6 +3,7 @@
 class Parser
 {
   public:
+   Parser();
    Parser(string equation);
    string parseInt();
    string parseOp();
