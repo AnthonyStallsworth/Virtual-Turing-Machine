@@ -53,7 +53,7 @@ Changelog/Mental Notes
     is make a project on github, then do some heavy refactoring to the code. That way I
     can just go back on what I did if I made a serious mistake.
 
--------------------------------------------May 10th-------------------------------------------
+-------------------------------------------May 12th-------------------------------------------
   More insight on the memory issue
   * At this point I am fairly certain that my issue is I am making a Turing Machine object,
     and then using the assignment operator to change the State-Transition-Table to another
@@ -93,3 +93,41 @@ Changelog/Mental Notes
 
   * I fixed the memory error! It was a double free error like I thought... overwriting the copy
     constructor and the assignment operator for both the Tape class and TuringMachine class worked.
+
+-------------------------------------------May 15th-------------------------------------------
+ * I would like to start thinking about how I want to rewrite the way my program prints.
+    Currently, when you call the constructor for a Parser object it takes a bool called print.
+    This can either be true or false, and if it is true then the program will print every
+    state of the Turing Machine while it is running. Since the linux terminal is not very fun
+    to scroll up and down in, and it will not show the whole print anyways, the solution I 
+    made was to pipe the output from the program into a file called turing and you can read it.
+    It is actually pretty fun. No matter if the program prints or not, it will still write
+    output to a file and open the file for you. I would like to write the compile_and_run
+    bash script so that when you run it you tell it whether or not to print. You could either
+    go:    ./compile_and_run
+           which will just run the code and return an output.
+    or:    ./compile_and_run print
+           which will run the code, print the runtime state of the turing machine to an output
+           file, and then open that file for you.
+
+    The difference would be a real quality of life upgrade.
+
+-------------------------------------------May 23rd-------------------------------------------
+ * Since my last update, I have updated my parser. The idea behind my new parser is that it
+   takes a string (which is the expression) and it will parse it as infix notation. It will
+   then convert the infix notation string to prefix notation using the shunting-yard
+   algorithm. This is because I really did not want to create an Abstract-Syntax Tree and
+   bloat my code. My code currently is filled with if-statements and while-loops and uses
+   both a stack and a queue. I am wondering if there is a better way to program the infix
+   to postfix function however the function is a one-pass function so it is O(n). When an
+   infix notation expression is transformed into a postfix expression, you can compute
+   the postfix expression and it will follow the order of PEMDAS. There is also precedence
+   now. I would really like to do more testing than I currently have to make sure it works.
+   Right now I have just compared my output with another infix to postfix converter online.
+
+ * When you are computing a postfix expression all you need is a stack. You push the numbers
+   onto the stack and when you encounter an operator you pop two numbers off the stack, com-
+   pute the answer and then push that back onto the stack. With this way of computation it
+   is much easier for me to chain Turing Machines together, and later on I should be able
+   to chain State-Transition-Tables in order to create a larger State-Transition-Table
+   very easily.

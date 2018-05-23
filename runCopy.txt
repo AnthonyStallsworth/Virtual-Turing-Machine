@@ -1,0 +1,67 @@
+
+int Parser::getResult()
+{
+  int rhs = 0;
+  char op;
+  TuringMachine t;
+  TuringMachine copyAdd(makeAdd());
+  TuringMachine copySub(makeSub());
+
+  int lhs = parseInt();
+  t.placeNum(lhs, print);
+  copyAdd.placeNum(lhs, false);
+  copySub.placeNum(lhs, false);
+
+  while(equation[curPos] != '\0')
+  {
+    op = equation[curPos];
+    curPos++;
+    curPos++;
+    rhs = parseInt();
+
+    if(op == '+')
+    {
+
+      t = copyAdd;
+      t.placeNum(rhs, print);
+
+      lhs = t.run(print);
+
+    } else if(op == '-') {
+
+      t = copySub;
+
+      t.placeNum(rhs, print);
+      lhs = t.run(print);
+
+    } else if(op == '*') {
+      if(rhs > 1)
+      { 
+        t = copyAdd;
+        int holder = lhs;
+        while(rhs > 1)
+        {
+          t.placeNum(holder, print);
+          lhs = t.run(print);
+          rhs--;
+        }
+      }
+    } else if(op == '/') {
+        
+      t = copySub;
+ 
+      int counter = 0;
+      while(lhs > rhs)
+      {
+        t.placeNum(rhs, print);
+        lhs = t.run(print);
+        counter++;
+      }
+
+      lhs = counter;
+    }
+  }
+  return lhs;
+}
+
+

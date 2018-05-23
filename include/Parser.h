@@ -3,12 +3,13 @@
 class Parser
 {
   public:
-   Parser(string equat, bool isPrint);
-   int parseInt();
-   int getResult();
+   Parser(string equation);
+   string parseInt();
+   string parseOp();
+   int getPrecedence(string op);
+   string infixToPostfix();
 
   private:
    string equation;
    int curPos;
-   bool print;
 };
