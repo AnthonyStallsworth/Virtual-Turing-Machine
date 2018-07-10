@@ -1,20 +1,28 @@
 #include "../include/Parser.h"
 #include "../include/TM_OP_TABLES.h"
 #include <string>
+#include <stack>
+#include <queue>
+#include <ctype.h>
 
-Parser::Parser(string equat, bool isPrint)
+Parser::Parser()
+{
+  equation = "";
+  curPos = 0;
+}
+
+Parser::Parser(string equat)
 {
   equation = equat;
   curPos = 0;
-  print = isPrint;
 }
 
 /* Get the current integer in the equation */
-int Parser::parseInt()
+string Parser::parseInt()
 {
   string number = "";
 
-  while(equation[curPos] != ' ' && equation[curPos] != '\0')
+  while(isdigit(equation[curPos]) && equation[curPos] != '\0')
   {
     number += equation[curPos];
     curPos++;
@@ -23,71 +31,128 @@ int Parser::parseInt()
   if(equation[curPos] == ' ')
     curPos++;
 
-  return atoi(number.c_str());
+  //return atoi(number.c_str());
+  number+= ' ';
+  return number;
 }
 
-int Parser::getResult()
+/* Parse an operator from the equation */
+string Parser::parseOp()
 {
-  int rhs = 0;
-  char op;
-  TuringMachine t;
-  TuringMachine copyAdd(makeAdd());
-  TuringMachine copySub(makeSub());
+  string op;
+  op = equation[curPos++];
+  if(equation[curPos] == ' ')
+    curPos++;
+  
+  op += ' ';
+  return op;
+}
 
-  int lhs = parseInt();
-  t.placeNum(lhs, print);
-  copyAdd.placeNum(lhs, false);
-  copySub.placeNum(lhs, false);
+/* Get the precedence of the current operator */
+int Parser::getPrecedence(string op)
+{
+  if(op == "( ") return 0;
+  if(op == "+ " || op == "- ") return 1;
+  if(op == "* " || op == "/ ") return 2;
+  if(op == "^ ") return 3;
+  if(op == ") ") return 4;
+  throw runtime_error("Expression '" + op + "' is not part of the language.");
+}
 
+/* Convert the infix notation to a postfix notation algorithm */
+string Parser::infixToPostfix()
+{
+  string postfix;
+  string op;
+
+  /* Operator stack and output queue */
+  stack<string> op_stack;
+  queue<string> out;
+  
+  /* Start the old precedence at a low value for the first comparison */
+  int old_precedence = -1;
+  int new_precedence = 0;
+
+  bool wasTrue = false;
+
+  /* Infix to Postfix */
   while(equation[curPos] != '\0')
   {
-    op = equation[curPos];
-    curPos++;
-    curPos++;
-    rhs = parseInt();
-
-    if(op == '+')
+    if(isdigit(equation[curPos]))
     {
 
-      t = copyAdd;
-      t.placeNum(rhs, print);
+      /* We need to push the integer into the output queue */
+      out.push(parseInt());
 
-      lhs = t.run(print);
+    } else {
 
-    } else if(op == '-') {
-
-      t = copySub;
-
-      t.placeNum(rhs, print);
-      lhs = t.run(print);
-
-    } else if(op == '*') {
-      if(rhs > 1)
-      { 
-        t = copyAdd;
-        int holder = lhs;
-        while(rhs > 1)
-        {
-          t.placeNum(holder, print);
-          lhs = t.run(print);
-          rhs--;
-        }
-      }
-    } else if(op == '/') {
-        
-      t = copySub;
+      /* Calculate new precedence */
+      op = parseOp();
+      new_precedence = getPrecedence(op);
  
-      int counter = 0;
-      while(lhs > rhs)
+      /* View previous precedence */
+      if(op_stack.size() > 0)
       {
-        t.placeNum(rhs, print);
-        lhs = t.run(print);
-        counter++;
+        old_precedence = getPrecedence(op_stack.top());
+      } else {      
+        old_precedence = -1;
       }
 
-      lhs = counter;
+      /* Compare */
+      if(new_precedence > 0 && new_precedence < 4)
+      {
+        while(old_precedence >= new_precedence && op_stack.size() > 0)
+        {
+          /* Pop the old operator into the output queue */
+          out.push(op_stack.top());
+          op_stack.pop();
+          if(op_stack.size() > 0)
+          {
+            old_precedence = getPrecedence(op_stack.top());
+          } else {
+    	    old_precedence = -1;
+          }
+        }
+
+        op_stack.push(op);
+        old_precedence = new_precedence;
+      }
+
+      if(new_precedence == 4)
+      {
+        /* Do something here! */
+        while(old_precedence != 0)
+        {
+          out.push(op_stack.top());
+          op_stack.pop();
+          old_precedence = getPrecedence(op_stack.top());
+        }
+
+        op_stack.pop();
+        old_precedence = new_precedence;
+      }
+
+      if(new_precedence == 0)
+      {
+        op_stack.push(op);
+        old_precedence = new_precedence;
+      }
     }
   }
-  std::cout << "The number at the end of the tape is: " << lhs << std::endl;
-  return lhs;
+  
+  /* Pop the stack into the output queue */
+  while(op_stack.size() > 0)
+  {
+    out.push(op_stack.top());
+    op_stack.pop();
+  }
+
+  /* Create the postfix expression from the output queue */
+  while(out.size() > 0)
+  {
+    postfix += out.front();
+    out.pop();
+  }
+
+  return postfix;
 }
